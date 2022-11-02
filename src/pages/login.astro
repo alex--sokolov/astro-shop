@@ -1,0 +1,88 @@
+---
+import Layout from "../layouts/layout.astro";
+import Menu from "../layouts/menu.astro";
+---
+
+<Layout>
+  <Menu />
+  <h1 style="text-align: center">Login</h1>
+  <style lang="scss">
+    .login-form {
+      max-width: 300px;
+      padding: 40px;
+      margin: 100px auto 0;
+      border: 2px solid #eee;
+      border-radius: 25px;
+      background: greenyellow;
+    }
+  </style>
+  <div>
+    <!--begin::Form-->
+    <form
+      id="kt_login_form"
+      class="form login-form"
+      action="#"
+      autocomplete="off"
+    >
+      <!--begin::Input group-->
+      <div class="fv-row mb-10">
+        <!--begin::Label-->
+        <label class="required fw-semibold fs-6 mb-2">Text Input</label>
+        <!--end::Label-->
+
+        <!--begin::Input-->
+        <input
+          type="text"
+          name="login"
+          class="form-control form-control-solid mb-3 mb-lg-0"
+          placeholder=""
+          value=""
+        />
+        <!--end::Input-->
+      </div>
+      <div class="fv-row mb-10">
+        <!--begin::Label-->
+        <label class="required fw-semibold fs-6 mb-2">Email Input</label>
+        <!--end::Label-->
+
+        <!--begin::Input-->
+        <input
+          type="email"
+          name="email"
+          class="form-control form-control-solid mb-3 mb-lg-0"
+          placeholder=""
+          value=""
+        />
+        <!--end::Input-->
+      </div>
+      <div class="fv-row mb-10">
+        <!--begin::Label-->
+        <label class="required fw-semibold fs-6 mb-2">Text Input</label>
+        <!--end::Label-->
+
+        <!--begin::Input-->
+        <input
+          type="text"
+          name="password"
+          class="form-control form-control-solid mb-3 mb-lg-0"
+          placeholder=""
+          value=""
+        />
+        <!--end::Input-->
+      </div>
+      <!--end::Input group-->
+
+      <!--begin::Actions-->
+      <button id="kt_btn_form_submit" type="submit" class="btn btn-primary" style="min-width:216px;">
+        <span class="indicator-label"> Login</span>
+        <span class="indicator-progress">
+          Please wait... <span
+            class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+      </button>
+      <!--end::Actions-->
+    </form>
+    <!--end::Form-->
+  </div>
+</Layout>
+<script is:inline src="/assets/js/my/myScript.js"></script>
