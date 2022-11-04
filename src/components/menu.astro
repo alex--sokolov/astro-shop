@@ -1,0 +1,91 @@
+---
+import { getUserProfile } from "../components/auth";
+import { logoutUser } from "../components/auth";
+const tokenCookie = Astro.cookies.get("astro-shop-token");
+
+
+const token = Object.keys(tokenCookie).length !== 0 ? tokenCookie.value : null;
+
+let user = undefined;
+if (token) {
+  user = await getUserProfile(token);
+}
+
+// const isLoggedIn = token ? true : false;
+---
+<style>
+  .greetings {
+    position: absolute;
+    color:brown;
+    font-size: 1.2rem;
+    top:10px;
+    right: 10px;
+  }
+  .greetings span {
+    color:darkblue;
+    font-weight: 500;
+  }
+
+  #logout-btn {
+    color:darkcyan;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: .3s;
+  }
+
+  #logout-btn:hover {
+    text-decoration: underline;
+    transition: .3s;
+  }
+</style>
+
+<!--begin::Menu-->
+<div class="menu">
+  <!--begin::Menu item-->
+  <div class="menu-item">
+    <a href="/" class="menu-link">
+      <span class="menu-icon">
+        <i class="bi bi-house fs-3"></i>
+      </span>
+      <span class="menu-title">Main</span>
+    </a>
+  </div>
+  <!-- {JSON.stringify(Object.keys(tokenCookie).length === 0, null, 2)}
+  {JSON.stringify(tokenCookie, null, 2)}
+  {JSON.stringify(token, null, 2)} -->
+  <!-- {JSON.stringify(user, null, 2)} -->
+  <!--end::Menu item -->
+  {
+    user ? (
+      <div class="greetings">Hello, <span>{user.username} - {user.id}</span> (<span id="logout-btn"> logout </span>)</div>
+    ) : (
+  <div class="menu-item">
+    <a href="/register" class="menu-link">
+      <span class="menu-icon">
+        <i class="bi bi-airplane-engines fs-3"></i>
+      </span>
+      <span class="menu-title">Registration</span>
+    </a>
+  </div>
+  <div class="menu-item">
+    <a href="/login" class="menu-link">
+      <span class="menu-icon">
+        <i class="bi bi-door-open fs-3"></i>
+      </span>
+      <span class="menu-title">Login</span>
+    </a>
+  </div>
+  )}
+</div>
+<!--end::Menu-->
+<div>
+  token: ( {token}
+  {tokenCookie}
+  {JSON.stringify(tokenCookie, null, 2)})
+</div>
+<div>
+  {Astro.url}
+</div>
+
+<script defer is:inline src="/assets/js/my/auth/logout.js"></script>

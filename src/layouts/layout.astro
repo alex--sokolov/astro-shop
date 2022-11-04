@@ -1,16 +1,21 @@
-<link rel="stylesheet" href="/assets/plugins/global/plugins.bundle.css">
-<link rel="stylesheet" href="/assets/css/style.bundle.css">
-<html lang="en2">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
-<script is:inline src="/assets/plugins/global/plugins.bundle.js"></script>
-<script is:inline src="/assets/js/scripts.bundle.js"></script>
+---
+const { title = "Astro-shop" } = Astro.props;
+import Menu from "../components/menu.astro";
+---
+
+<link rel="stylesheet" href="/assets/plugins/global/plugins.bundle.css" />
+<link rel="stylesheet" href="/assets/css/style.bundle.css" />
+
+<meta charset="utf-8" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="viewport" content="width=device-width" />
+<meta name="generator" content={Astro.generator} />
+<title>{title}</title>
+
+<body>
+  <Menu />
+  <slot />
+  <script defer is:inline src="/assets/plugins/global/plugins.bundle.js"
+  ></script>
+  <script defer is:inline src="/assets/js/scripts.bundle.js"></script>
+</body>
