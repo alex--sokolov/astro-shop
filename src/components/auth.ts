@@ -1,5 +1,3 @@
-import type { IProducts } from '../interfaces';
-
 export const registerNewUser = async (username: string = '1', email: string = '2', password: string = '3'): Promise<Response> => {
   const url = import.meta.env.STRAPI_SERVER + import.meta.env.REGISTER_URL;
   const data = {
@@ -22,16 +20,15 @@ export const registerNewUser = async (username: string = '1', email: string = '2
   return response.json();
 };
 
-export const getUserProfile = async (token: string): Promise<any> => {
+export const getUserProfile = async (token: string): Promise<Response> => {
   const url = import.meta.env.STRAPI_SERVER + import.meta.env.USER_INFO_URL;
 
-
-
-
-  const userInfo = {
-    id: "1555",
-    username: "Vasya"
-  };
-
-  return userInfo;
-}
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    }
+  });
+  return response.json();
+};

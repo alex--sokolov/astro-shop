@@ -1,11 +1,8 @@
 ---
 import { getUserProfile } from "../components/auth";
 import { logoutUser } from "../components/auth";
-const tokenCookie = Astro.cookies.get("astro-shop-token");
 
-
-const token = Object.keys(tokenCookie).length !== 0 ? tokenCookie.value : null;
-
+const {token} = Astro.props;
 let user = undefined;
 if (token) {
   user = await getUserProfile(token);
@@ -51,14 +48,17 @@ if (token) {
       <span class="menu-title">Main</span>
     </a>
   </div>
+
+  {JSON.stringify(token, null, 2)}
+
   <!-- {JSON.stringify(Object.keys(tokenCookie).length === 0, null, 2)}
   {JSON.stringify(tokenCookie, null, 2)}
   {JSON.stringify(token, null, 2)} -->
   <!-- {JSON.stringify(user, null, 2)} -->
   <!--end::Menu item -->
   {
-    user ? (
-      <div class="greetings">Hello, <span>{user.username} - {user.id}</span> (<span id="logout-btn"> logout </span>)</div>
+    user && user.username && user.id ? (
+      <div class="greetings">Hello, <span>{user.username} (id: {user.id})</span> (<span id="logout-btn"> logout </span>)</div>
     ) : (
   <div class="menu-item">
     <a href="/register" class="menu-link">
@@ -79,11 +79,6 @@ if (token) {
   )}
 </div>
 <!--end::Menu-->
-<div>
-  token: ( {token}
-  {tokenCookie}
-  {JSON.stringify(tokenCookie, null, 2)})
-</div>
 <div>
   {Astro.url}
 </div>

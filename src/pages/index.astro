@@ -1,6 +1,18 @@
 ---
 import Layout from "../layouts/layout.astro";
+import { getProducts } from "../components/products";
+import ProductsList from "../components/ProductsList.astro"
+import type { IProduct, IProductsInfo } from "../interfaces";
+const tokenCookie = Astro.cookies.get("astro-shop-token");
+const token = Object.keys(tokenCookie).length !== 0 ? tokenCookie.value : null;
+// const products = await getUserProfile(token);
+const productsInfo = (await getProducts()) as unknown as IProductsInfo;
+const products: IProduct[] = productsInfo.data ? productsInfo.data : [];
 ---
-<Layout title='Astro-shop: Main'>
-	<h1 style="text-align: center">Main page</h1>
+
+<Layout title="Astro-shop: Main">
+  token: {token}
+  <h1 style="text-align: center">Products</h1>
+  <ProductsList products={products}/>
+  <!-- Products: {JSON.stringify(products, null, 4)} -->
 </Layout>

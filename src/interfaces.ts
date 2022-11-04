@@ -1,6 +1,14 @@
-export interface IProducts {
+export interface IProduct {
   id: string;
-  title: string;
-  image: string;
-  price: number;
+  attributes: {
+    Product_id: string;
+    Title: string;
+    image?: string;
+    Price?: number;
+  }
+}
+
+export interface IProductsInfo {
+  data: IProduct[],
+
 }

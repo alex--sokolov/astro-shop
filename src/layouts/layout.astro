@@ -1,6 +1,8 @@
 ---
 const { title = "Astro-shop" } = Astro.props;
 import Menu from "../components/menu.astro";
+const tokenCookie = Astro.cookies.get("astro-shop-token");
+const token = Object.keys(tokenCookie).length !== 0 ? tokenCookie.value : null;
 ---
 
 <link rel="stylesheet" href="/assets/plugins/global/plugins.bundle.css" />
@@ -13,9 +15,13 @@ import Menu from "../components/menu.astro";
 <title>{title}</title>
 
 <body>
-  <Menu />
+  <Menu token={token} />
   <slot />
-  <script defer is:inline src="/assets/plugins/global/plugins.bundle.js"
-  ></script>
-  <script defer is:inline src="/assets/js/scripts.bundle.js"></script>
+  <div>
+    token: ( {token}
+    {tokenCookie}
+    {JSON.stringify(tokenCookie, null, 2)})
+  </div>
+  <script is:inline src="/assets/plugins/global/plugins.bundle.js"></script>
+  <script is:inline src="/assets/js/scripts.bundle.js"></script>
 </body>

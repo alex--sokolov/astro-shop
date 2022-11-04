@@ -3,8 +3,10 @@ const logout = async (cookieName) => {
 }
 
 const logoutBtn = document.getElementById('logout-btn');
-logoutBtn.addEventListener('click', async function (e) {
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', async function (e) {
         await logout('astro-shop-token');
         location.reload()
-    }
-)
+      }
+  )
+}

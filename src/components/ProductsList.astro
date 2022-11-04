@@ -1,0 +1,83 @@
+---
+import type { IProduct } from "../interfaces";
+const { products } = Astro.props;
+const strapiServerUrl = import.meta.env.STRAPI_SERVER;
+---
+
+<style>
+  .products-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 40px 5px;
+  }
+  .product-container {
+    width: calc(33% - 20px);
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .product-container:hover {
+    border: 1px solid red;
+  }
+  .product-id {
+    font-size: 1rem;
+    color: #aaa;
+    margin-bottom: 5px;
+  }
+  .product-title {
+    font-size: 1.4rem;
+    color: #222;
+    margin-bottom: 10px;
+  }
+  .product-image {
+    margin-bottom: 10px;
+  }
+  .product-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #222;
+  }
+  .product-price span{
+    color: #cc0000;
+  }
+  @media screen and (max-width: 1000px) {
+    .product-container {
+        width: calc(50% - 20px);
+    }
+  }
+  @media screen and (max-width: 600px) {
+    .product-container {
+        width: calc(100% - 20px);
+    }
+  }
+</style>
+
+<div class="products-list">
+  {
+    products.map((product: IProduct) => (
+      <a href={`/product/${product.attributes.Product_id}`} class="product-container">
+        <div class="product-id">
+          Id:{" "}
+          {"product-code: " +
+            product.attributes.Product_id +
+            " (id: " +
+            product.id +
+            ")"}
+        </div>
+        <div class="product-title">Title: {product.attributes.Title}</div>
+        <div class="product-image">
+          <img
+            src={
+              strapiServerUrl +
+              product.attributes.Image.data[0].attributes.formats.thumbnail.url
+            }
+          />
+        </div>
+        <div class="product-price">Price: <span>${product.attributes.Price}</span></div>
+      </div>
+    ))
+  }
+</div>
