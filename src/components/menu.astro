@@ -7,10 +7,11 @@ let user = undefined;
 if (token) {
   user = await getUserProfile(token);
 }
-
-// const isLoggedIn = token ? true : false;
 ---
 <style>
+  .menu {
+    border-bottom: 1px solid #ccc;
+  }
   .greetings {
     position: absolute;
     color:brown;
@@ -48,14 +49,6 @@ if (token) {
       <span class="menu-title">Main</span>
     </a>
   </div>
-
-  {JSON.stringify(token, null, 2)}
-
-  <!-- {JSON.stringify(Object.keys(tokenCookie).length === 0, null, 2)}
-  {JSON.stringify(tokenCookie, null, 2)}
-  {JSON.stringify(token, null, 2)} -->
-  <!-- {JSON.stringify(user, null, 2)} -->
-  <!--end::Menu item -->
   {
     user && user.username && user.id ? (
       <div class="greetings">Hello, <span>{user.username} (id: {user.id})</span> (<span id="logout-btn"> logout </span>)</div>
@@ -79,8 +72,4 @@ if (token) {
   )}
 </div>
 <!--end::Menu-->
-<div>
-  {Astro.url}
-</div>
-
 <script defer is:inline src="/assets/js/my/auth/logout.js"></script>

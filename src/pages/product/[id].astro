@@ -1,0 +1,16 @@
+---
+import Layout from "../../layouts/layout.astro";
+import { getProductById } from "../../components/products";
+import Product from "../../components/Product.astro";
+const { id } = Astro.params;
+const uid = parseInt((id as string).split('').reverse().join(''));
+const metaTitle = (id as string).substring(0, (id as string).length - uid.toString().length-1);
+const productInfo = await getProductById(uid);
+const product = productInfo.data;
+if (Object.keys(productInfo).length === 0 || product === null || metaTitle !==product.attributes.Product_id) {
+  return Astro.redirect("/404");
+}
+---
+<Layout title={id}>
+  <Product product={product} />
+</Layout>

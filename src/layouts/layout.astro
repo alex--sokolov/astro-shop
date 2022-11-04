@@ -17,11 +17,6 @@ const token = Object.keys(tokenCookie).length !== 0 ? tokenCookie.value : null;
 <body>
   <Menu token={token} />
   <slot />
-  <div>
-    token: ( {token}
-    {tokenCookie}
-    {JSON.stringify(tokenCookie, null, 2)})
-  </div>
   <script is:inline src="/assets/plugins/global/plugins.bundle.js"></script>
   <script is:inline src="/assets/js/scripts.bundle.js"></script>
 </body>

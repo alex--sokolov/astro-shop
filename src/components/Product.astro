@@ -1,0 +1,78 @@
+---
+const strapiServerUrl = import.meta.env.STRAPI_SERVER;
+const { product } = Astro.props;
+---
+
+<style>
+  .product-container {
+    display: flex;
+    justify-content: center;
+    gap:80px;
+    width: calc(100% - 20px);
+    padding: 20px;
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .product-id {
+    font-size: 1rem;
+    color: #aaa;
+    margin-bottom: 5px;
+  }
+  .product-title {
+    font-size: 1.4rem;
+    color: #222;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .product-image {
+    margin-bottom: 10px;
+  }
+  .product-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #222;
+  }
+  .product-price span {
+    color: #cc0000;
+  }
+  .btn-primary {
+    max-width: 200px;
+    margin-bottom: 10px;
+  }
+  @media screen and (max-width: 800px) {
+    .product-container {
+        flex-direction: column;
+        text-align: center;
+        gap:20px;
+    }
+    .btn-primary {
+      margin: 20px auto;
+  }
+  }
+
+</style>
+<div class="product-container">
+  <div class="left">
+    <h1 class="product-title">Title: {product.attributes.Title}</h1>
+    <div class="product-image">
+      <img
+        src={strapiServerUrl + product.attributes.Image.data[0].attributes.url}
+      />
+    </div>
+  </div>
+  <div class="right">
+    <div class="product-info">
+      <div class="product-id">
+        {`${product.attributes.Product_id} (id:${product.id})`}
+      </div>
+      <div class="product-price">
+        Price: <span>${product.attributes.Price}</span>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary">Add to cart</button>
+  </div>
+</div>

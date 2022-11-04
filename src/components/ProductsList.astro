@@ -58,14 +58,9 @@ const strapiServerUrl = import.meta.env.STRAPI_SERVER;
 <div class="products-list">
   {
     products.map((product: IProduct) => (
-      <a href={`/product/${product.attributes.Product_id}`} class="product-container">
+      <a href={`/product/${product.attributes.Product_id}-${product.id}`} class="product-container">
         <div class="product-id">
-          Id:{" "}
-          {"product-code: " +
-            product.attributes.Product_id +
-            " (id: " +
-            product.id +
-            ")"}
+            {`${product.attributes.Product_id} (id:${product.id})`}
         </div>
         <div class="product-title">Title: {product.attributes.Title}</div>
         <div class="product-image">
@@ -77,7 +72,7 @@ const strapiServerUrl = import.meta.env.STRAPI_SERVER;
           />
         </div>
         <div class="product-price">Price: <span>${product.attributes.Price}</span></div>
-      </div>
+      </a>
     ))
   }
 </div>
