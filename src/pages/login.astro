@@ -75,8 +75,7 @@ const urlLogin = import.meta.env.STRAPI_SERVER + import.meta.env.LOGIN_URL;
     <!--end::Form-->
   </div>
 </Layout>
-<script defer is:inline define:vars={{ urlLogin }}>
+<script is:inline define:vars={{ urlLogin }}>
   window.urlLogin = urlLogin;
 </script>
-
 <script defer is:inline src="/assets/js/my/auth/login.js"></script>

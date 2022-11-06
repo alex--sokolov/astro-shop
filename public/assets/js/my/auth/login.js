@@ -1,30 +1,3 @@
-const loginUser = async (login, password) => {
-  const data = {
-    identifier: login,
-    password
-  };
-  const response = await fetch(window.urlLogin, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    body: JSON.stringify(data) // body data type must match "Content-Type" header
-  });
-  return response.json();
-};
-
-const setCookie = (cookieName, cookieValue, expiresInDays) => {
-  const date = new Date();
-  const expiresInMillis = expiresInDays * 86400000;
-  date.setTime(date.getTime() + expiresInMillis);
-  document.cookie = cookieName + '=' + cookieValue + ';expires=' + date.toUTCString() + ';path=/';
-}
-
 // Define form element
 const authForm = document.getElementById('kt_login_form');
 

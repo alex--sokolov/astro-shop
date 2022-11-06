@@ -15,8 +15,11 @@ const token = Object.keys(tokenCookie).length !== 0 ? tokenCookie.value : null;
 <title>{title}</title>
 
 <body>
+  <script defer is:inline src="/assets/js/my/api/api.js"></script>
+  <script defer is:inline src="/assets/js/my/auth/logout.js"></script>
   <Menu token={token} />
   <slot />
-  <script is:inline src="/assets/plugins/global/plugins.bundle.js"></script>
   <script is:inline src="/assets/js/scripts.bundle.js"></script>
+  <script is:inline src="/assets/plugins/global/plugins.bundle.js"></script>
+
 </body>

@@ -1,41 +1,65 @@
 ---
 import { getUserProfile } from "../components/auth";
-import { logoutUser } from "../components/auth";
+import type {IUser} from "../interfaces";
 
-const {token} = Astro.props;
+const { token } = Astro.props;
 let user = undefined;
 if (token) {
-  user = await getUserProfile(token);
+  user = (await getUserProfile(token)) as IUser;
 }
 ---
+
 <style>
   .menu {
     border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
   }
   .greetings {
     position: absolute;
-    color:brown;
-    font-size: 1.2rem;
-    top:10px;
+    display: flex;
+    gap:10px;
+    align-items: center;
+    gap: px;
+    color: brown;
+    font-size: 1.1rem;
+    font-weight: 700;
+    top: 10px;
     right: 10px;
   }
-  .greetings span {
-    color:darkblue;
-    font-weight: 500;
+  .greetings-word {
+    color: rgb(30, 179, 30);
   }
-
+  .greetings-user {
+    color: #009ef7;
+  }
+  .greetings-user span {
+    color: #ccc;
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
   #logout-btn {
-    color:darkcyan;
+    color: #e20b0b;
     cursor: pointer;
     font-size: 1rem;
-    font-weight: 700;
-    transition: .3s;
+    transition: 0.3s;
   }
 
   #logout-btn:hover {
     text-decoration: underline;
-    transition: .3s;
+    transition: 0.3s;
   }
+
+  @media screen and (max-width: 550px) {
+    .greetings {
+      flex-direction: column;
+      top:0;
+      gap:0;
+    }
+    .greetings-word, .greetings-user span {
+      display: none;
+    }
+  }
+
 </style>
 
 <!--begin::Menu-->
@@ -51,25 +75,75 @@ if (token) {
   </div>
   {
     user && user.username && user.id ? (
-      <div class="greetings">Hello, <span>{user.username} (id: {user.id})</span> (<span id="logout-btn"> logout </span>)</div>
+      <div class="menu-item">
+        <div  data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
+          <a id="menu-cart" class="menu-link">
+            <span class="menu-icon">
+              <i class="bi bi-cart fs-3" />
+            </span>
+            <span class="menu-title">Cart </span>
+            <span style="padding: 0 5px">
+            (<span id="cart-amount">{user.Cart.length}</span>)
+            </span>
+          </a>
+        </div>
+        <!--begin::Cart detailed info-->
+        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-75" data-kt-menu="true">
+            <!--begin::Menu item-->
+            <div class="menu-item px-3">
+                <div class="menu-content fs-6 text-dark fw-bold px-3 py-4" style="width: 90vw">live cart information</div>
+            </div>
+            <!--end::Menu item-->
+            <!--begin::Menu separator-->
+            <div class="separator mb-3 opacity-75"></div>
+            <!--end::Menu separator-->
+
+            <!--begin::Cart info description -->
+            <div id="cart-details" style="display: block; height: 300px; width: 300px;">
+
+            </div>
+            <!--end::Cart info description -->
+            <!--begin::Menu separator-->
+            <div class="separator mt-3 opacity-75"></div>
+            <!--end::Menu separator-->
+
+            <!--begin::Menu item-->
+            <div class="menu-item px-3">
+                <div class="menu-content px-3 py-3" style="text-align: right;">
+                    <a class="btn btn-light-primary btn-sm px-4" href="#">
+                        Proceed to checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end::Cart detailed info-->
+        <div class="greetings">
+          <div class="greetings-word">Hello,</div>
+          <div class="greetings-user">{user.username} <span>/id:{user.id}/</span></div>
+          <div id="logout-btn">( logout )</div>
+        </div>
+      </div>
     ) : (
-  <div class="menu-item">
-    <a href="/register" class="menu-link">
-      <span class="menu-icon">
-        <i class="bi bi-airplane-engines fs-3"></i>
-      </span>
-      <span class="menu-title">Registration</span>
-    </a>
-  </div>
-  <div class="menu-item">
-    <a href="/login" class="menu-link">
-      <span class="menu-icon">
-        <i class="bi bi-door-open fs-3"></i>
-      </span>
-      <span class="menu-title">Login</span>
-    </a>
-  </div>
-  )}
+      <>
+        <div class="menu-item">
+          <a href="/register" class="menu-link">
+            <span class="menu-icon">
+              <i class="bi bi-airplane-engines fs-3" />
+            </span>
+            <span class="menu-title">Registration</span>
+          </a>
+        </div>
+        <div class="menu-item">
+          <a href="/login" class="menu-link">
+            <span class="menu-icon">
+              <i class="bi bi-door-open fs-3" />
+            </span>
+            <span class="menu-title">Login</span>
+          </a>
+        </div>
+      </>
+    )
+  }
 </div>
-<!--end::Menu-->
-<script defer is:inline src="/assets/js/my/auth/logout.js"></script>
+
+{JSON.stringify(user, null, 2)}

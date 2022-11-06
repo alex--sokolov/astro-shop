@@ -1,7 +1,9 @@
 ---
 import type { IProduct } from "../interfaces";
-const { products } = Astro.props;
+const { products, user, token } = Astro.props;
 const strapiServerUrl = import.meta.env.STRAPI_SERVER;
+const urlUpdateCart =
+  import.meta.env.STRAPI_SERVER + import.meta.env.UPDATE_CART_URL;
 ---
 
 <style>
@@ -9,7 +11,7 @@ const strapiServerUrl = import.meta.env.STRAPI_SERVER;
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    margin: 40px 5px;
+    margin: 15px 5px;
   }
   .product-container {
     width: calc(33% - 20px);
@@ -19,8 +21,8 @@ const strapiServerUrl = import.meta.env.STRAPI_SERVER;
     cursor: pointer;
     text-align: center;
   }
-  .product-container:hover {
-    border: 1px solid red;
+  .product-container img {
+    height: 150px;
   }
   .product-id {
     font-size: 1rem;
@@ -40,17 +42,28 @@ const strapiServerUrl = import.meta.env.STRAPI_SERVER;
     font-weight: 700;
     color: #222;
   }
-  .product-price span{
+  .product-price span {
     color: #cc0000;
   }
+
+  .buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+  }
+  .btn-product-cart {
+    min-width: 130px;
+  }
+
   @media screen and (max-width: 1000px) {
     .product-container {
-        width: calc(50% - 20px);
+      width: calc(50% - 3px);
     }
   }
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 666px) {
     .product-container {
-        width: calc(100% - 20px);
+      width: 100%;
     }
   }
 </style>
@@ -58,9 +71,9 @@ const strapiServerUrl = import.meta.env.STRAPI_SERVER;
 <div class="products-list">
   {
     products.map((product: IProduct) => (
-      <a href={`/product/${product.attributes.Product_id}-${product.id}`} class="product-container">
+      <div class="product-container">
         <div class="product-id">
-            {`${product.attributes.Product_id} (id:${product.id})`}
+          {`${product.attributes.Product_slug} (id:${product.id})`}
         </div>
         <div class="product-title">Title: {product.attributes.Title}</div>
         <div class="product-image">
@@ -71,8 +84,146 @@ const strapiServerUrl = import.meta.env.STRAPI_SERVER;
             }
           />
         </div>
-        <div class="product-price">Price: <span>${product.attributes.Price}</span></div>
-      </a>
+        <div class="product-price">
+          Price: <span>${product.attributes.Price}</span>
+        </div>
+        {user ? (
+          <div class="buttons">
+            <button
+              type="button"
+              class="btn btn-info btn-product-info"
+              data-url={`/product/${product.attributes.Product_slug}-${product.id}`}
+            >
+              Info
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-warning btn-product-edit"
+              data-url={`/product/${product.attributes.Product_slug}-${product.id}-editMode`}
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary btn-product-cart"
+              data-product={product.id}
+              data-user={user.id}
+              data-cart={JSON.stringify(user.Cart)}
+              data-urlUpdateCart={urlUpdateCart}
+            >
+              Add to cart
+              <span class="indicator-progress">
+                <span class="spinner-border spinner-border-sm align-middle ms-2" />
+              </span>
+            </button>
+          </div>
+        ) : (
+          <div class="buttons">
+            <button type="button" class="btn btn-info">
+              Info
+            </button>
+          </div>
+        )}
+      </div>
     ))
   }
 </div>
+<script>
+  const btnInfoAll = document.querySelectorAll(".btn-product-info");
+  if (btnInfoAll.length > 0) {
+    Array.from(btnInfoAll).forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        window.location = e.target.dataset.url;
+      });
+    });
+  }
+  const btnEditAll = document.querySelectorAll(".btn-product-edit");
+  if (btnEditAll.length > 0) {
+    Array.from(btnEditAll).forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        window.location = e.target.dataset.url;
+      });
+    });
+  }
+
+  const btnCartAll = document.querySelectorAll(
+    ".btn-product-cart"
+  ) as NodeListOf<HTMLButtonElement>;
+  console.log("btnCartAll", btnCartAll);
+  if (btnCartAll.length > 0) {
+    const state = {};
+    Array.from(btnCartAll).forEach((btn: HTMLButtonElement) => {
+      btn.addEventListener("click", async function (e: Event) {
+        if (e?.target?.dataset) {
+          const productId = Number(e.target.dataset.product);
+          const userId = e.target.dataset.user;
+          const url = e.target.dataset.urlupdatecart;
+          if (!state.cart) {
+            const cartData = e.target.dataset.cart;
+            const cartRendered = cartData
+              ? JSON.parse(cartData).map((product) => ({
+                  id: product.product.id,
+                  amount: product.amount,
+                }))
+              : [];
+            state.cart = cartRendered;
+          }
+          const cart = state.cart;
+          console.log("e", e);
+          console.log("product_id: ", productId);
+          console.log("user: ", userId);
+          console.log("cart: ", cart);
+          console.log("urlUpdateCart: ", url);
+          const token = getCookie("astro-shop-token");
+          console.log("token: ", token);
+          btn.disabled = true;
+          btn.setAttribute("data-kt-indicator", "on");
+          // setTimeout(async () => {
+          const result = await updateUserCart(cart, productId, url, userId);
+          if (result.error) {
+            Swal.fire({
+              title: result.error.status,
+              text: result.error.message,
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Ok, got it!",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            });
+          }
+          if (result.cart) {
+            Swal.fire({
+              title: "Great choice",
+              text: "You have successfully added an item to cart",
+              icon: "success",
+              buttonsStyling: false,
+              confirmButtonText: "Ok, got it!",
+              customClass: {
+                confirmButton: "btn btn-primary",
+              },
+            });
+            console.log("before:", state.cart);
+            state.cart = result.cart;
+            console.log("after:", state.cart);
+            console.log("after:", state.cart.length);
+            console.log("result:", result);
+            const cartMenuItem = document.getElementById("cart-amount");
+            cartMenuItem.textContent = state.cart.length;
+          }
+          btn.removeAttribute("data-kt-indicator");
+          btn.disabled = false;
+          // location.reload();
+          // }, 1000);
+
+          // add to cart
+
+          // add to user cart in strapi
+
+          // change amount in menu
+        }
+      });
+    });
+  }
+</script>
