@@ -1,8 +1,27 @@
 ---
 const { title = "Astro-shop" } = Astro.props;
-import Menu from "../components/menu.astro";
+import Menu from "../components/Menu.astro";
 const tokenCookie = Astro.cookies.get("astro-shop-token");
 const token = Object.keys(tokenCookie).length !== 0 ? tokenCookie.value : null;
+
+import { io } from "socket.io-client";
+const SERVER_URL = "http://localhost:1337";
+// token will be verified, connection will be rejected if not a valid JWT
+const socket = token
+  ? io(SERVER_URL, {
+      auth: {
+        token: token,
+      },
+    })
+  : io(SERVER_URL);
+
+//  wait until socket connects before adding event listeners
+socket.on("connect", () => {
+  socket.on("message:update", (data: any) => {
+    console.log(data);
+  });
+  socket.on("hello", (res: any) => console.log(res));
+});
 ---
 
 <link rel="stylesheet" href="/assets/plugins/global/plugins.bundle.css" />
@@ -21,5 +40,27 @@ const token = Object.keys(tokenCookie).length !== 0 ? tokenCookie.value : null;
   <slot />
   <script is:inline src="/assets/js/scripts.bundle.js"></script>
   <script is:inline src="/assets/plugins/global/plugins.bundle.js"></script>
-
 </body>
+<script
+  src="https://cdn.socket.io/4.5.3/socket.io.min.js"
+  integrity="sha384-WPFUvHkB1aHA5TDSZi6xtDgkF0wXJcIIxXhC6h8OT8EH3fC5PWro5pWJ1THjcfEi"
+  crossorigin="anonymous"
+></script>
+<script>
+const token = getCookie("astro-shop-token");
+  console.log('tokenSocket: ', token)
+  const socket = token
+    ? io("http://localhost:1337", {
+        auth: {
+          token: token,
+        },
+      })
+    : io("http://localhost:1337");
+  socket.on("connect", () => {
+    socket.on("message:update", (data: any) => {
+      console.log(data);
+    });
+  socket.on("hello", (res: any) => console.log(res));
+});
+
+</script>

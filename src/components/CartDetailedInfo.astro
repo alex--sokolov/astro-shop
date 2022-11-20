@@ -1,0 +1,166 @@
+---
+import CardDetails from "../components/CartDetails.astro";
+const { user } = Astro.props;
+const urlUpdateCart =
+  import.meta.env.STRAPI_SERVER + import.meta.env.UPDATE_CART_URL;
+---
+
+<style is:global>
+  #cart-details {
+    padding: 2%;
+    display: block;
+    min-height: 300px;
+    min-width: 300px;
+  }
+  .cart-detailed-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  .card-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-toolbar div {
+    border-bottom: 2px solid #cc0000;
+  }
+
+  .empty-cart {
+    text-align: center;
+    margin-top: 60px;
+    font-size: 6rem;
+    color: #ccc;
+  }
+
+  @media screen and (max-width: 800px) {
+    #card-details-container {
+      width: 100% !important;
+      transform: translate(0, 35px);
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .empty-cart {
+      margin-top: 120px;
+      font-size: 3rem;
+    }
+  }
+</style>
+
+<div
+  id="card-details-container"
+  class="menu menu-sub m-0 menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-75"
+  data-kt-menu="true"
+>
+  <!--begin::Menu item-->
+  <div class="menu-item px-3">
+    <div class="menu-content fs-6 text-dark fw-bold px-3 py-4">
+      <div class="card-toolbar">
+        <div>live cart information</div>
+        <a
+          href="javascript: 
+          document.getElementById('btn-cart-menu').classList.remove('show', 'menu-dropdown'); 
+          document.getElementById('card-details-container').classList.remove('show');"
+          class="btn btn-primary font-weight-bolder font-size-sm"
+          >Continue Shopping</a
+        >
+      </div>
+    </div>
+  </div>
+  <!--end::Menu item-->
+  <!--begin::Menu separator-->
+  <div class="separator mb-3 opacity-75"></div>
+  <!--end::Menu separator-->
+  <div id="cart-details">
+    <!--begin::Cart info description -->
+    {
+      user.Cart.length > 0 ? (
+        <>
+          <CardDetails user={user} />
+          <div class="empty-cart" style="display:none">
+            Cart is empty
+          </div>
+        </>
+      ) : (
+        <div class="empty-cart">Cart is empty</div>
+      )
+    }
+  </div>
+  <!--end::Cart info description -->
+  <!--begin::Menu separator-->
+  <div class="separator mt-3 opacity-75"></div>
+  <!--end::Menu separator-->
+
+  <!--begin::Menu item-->
+  <div class="menu-item px-3">
+    <div class="cart-detailed-buttons menu-content px-3 py-3">
+      <button
+        id="btn-clear-card"
+        class="btn btn-light-danger btn-sm px-4"
+        data-urlUpdateCart={urlUpdateCart}
+        data-user={user.id}
+        disabled={user.Cart.length === 0}
+      >
+        Clear card
+        <span class="indicator-progress">
+          <span class="spinner-border spinner-border-sm align-middle ms-2"
+          ></span>
+        </span>
+      </button>
+          <button 
+          id="btn-checkout" 
+          class="btn btn-light-primary btn-sm px-4" 
+          disabled={user.Cart.length === 0}>
+            Proceed to checkout
+          </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline src="/assets/js/my/cart/handleCheckout.js"></script>
+<script>
+  const btnClearCard = document.getElementById("btn-clear-card") as HTMLButtonElement;
+  const btnCheckout = document.getElementById("btn-checkout") as HTMLButtonElement;
+  btnClearCard?.addEventListener("click", async (e: Event) => {
+    var menuEl = document.querySelector("#btn-cart-menu");
+    var menu = KTMenu.getInstance(menuEl);
+    menu.on("kt.menu.dropdown.hide", function () {
+      return false;
+    });
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete all!",
+    }).then(async function () {
+      if (e.target instanceof HTMLButtonElement) {
+        const userId = e?.target?.dataset.user;
+        const url = e.target.dataset.urlupdatecart;
+        btnClearCard.setAttribute("data-kt-indicator", "on");
+        const result = await clearUserCart(url, userId);
+        if (result.id) {
+          state.cart = [];
+          const cartDetails = document.getElementById("cart-details") as HTMLElement;
+          while (cartDetails.firstChild) {
+            cartDetails.removeChild(cartDetails.firstChild);
+          }
+          const emptyCart = document.createElement("div");
+          emptyCart.classList.add("empty-cart");
+          emptyCart.textContent = "Cart is empty";
+          cartDetails.appendChild(emptyCart);
+          btnClearCard.removeAttribute("data-kt-indicator");
+          btnClearCard.disabled = true;
+          btnCheckout.disabled = true;
+          const cartMenuItem = document.getElementById("cart-amount") as HTMLDivElement;
+          cartMenuItem.textContent = '0';
+          Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        }
+      }
+    });
+  });
+
+
+  btnCheckout?.addEventListener("click", (e: Event) => handleCheckout(e));
+</script>

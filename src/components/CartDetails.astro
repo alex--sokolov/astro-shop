@@ -1,0 +1,52 @@
+---
+import CartProduct from '../components/CartProduct.astro';
+const {user} = Astro.props;
+import { getProductById } from "../components/products";
+import type {IProductCart, IProductsInfoOne} from "../interfaces";
+---
+
+{JSON.stringify(user, null, 2)}
+
+<div class="card-body">
+  <!--begin::Shopping Cart-->
+  <div class="table-responsive">
+    <table class="table">
+      <!--begin::Cart Header-->
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th class="text-center">Qty</th>
+          <th class="text-right">Price</th>
+          <th></th>
+        </tr>
+      </thead>
+      <!--end::Cart Header-->
+      <tbody>
+        <!--begin::Cart Content-->
+        {
+            user.Cart.map(async(product: IProductCart) => {
+                const productInfo = await getProductById(product.product.id.toString()) as IProductsInfoOne;
+
+                console.log('productInfo: ', JSON.stringify(productInfo));
+                return <CartProduct product={{...product, image: productInfo.data.attributes.Image}}/>
+            })
+        }
+        <!--end::Cart Content-->
+        <!--begin::Cart Footer-->
+        <tr>
+          <td colspan="2"></td>
+          <td class="font-weight-bolder font-size-h4 text-right">Subtotal</td>
+          <td class="font-weight-bolder font-size-h4 text-right">
+            {`$${user.Cart.reduce((sum: number, product: IProductCart) => {
+                    sum += product.amount*product.product.Price;
+                    return sum;
+                }, 0).toFixed(2)}`
+            }
+        </td>
+        </tr>
+        <!--end::Cart Footer-->
+      </tbody>
+    </table>
+  </div>
+  <!--end::Shopping Cart-->
+</div>

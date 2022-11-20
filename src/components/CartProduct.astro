@@ -1,0 +1,43 @@
+---
+const strapiServerUrl = import.meta.env.STRAPI_SERVER;
+const { product } = Astro.props;
+---
+
+{JSON.stringify(product, null, 2)}
+<!-- IMAGE: {JSON.stringify(product.image, null, 2)} -->
+<tr>
+  <td class="d-flex align-items-center font-weight-bolder" style="gap:10px">
+    <!--begin::Symbol-->
+    <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
+      <div
+        class="symbol-label"
+        style={`background-image: url(${
+          strapiServerUrl +
+          product.image.data[0].attributes.formats.thumbnail.url
+        })`}
+      >
+      </div>
+    </div>
+    <!--end::Symbol-->
+    <a
+      href={`/product/${product.product.Product_slug}-${product.product.id}`}
+      class="text-dark text-hover-primary">{product.product.Title}</a
+    >
+  </td>
+  <td class="text-center align-middle">
+    <a href="javascript:;" class="btn btn-xs btn-light-success btn-icon mr-2">
+      -
+    </a>
+    <span class="mr-2 font-weight-bolder">{product.amount}</span>
+    <a href="javascript:;" class="btn btn-xs btn-light-success btn-icon">
+      +
+    </a>
+  </td>
+  <td class="text-right align-middle font-weight-bolder font-size-h5"
+    >${product.product.Price.toFixed(2)}</td
+  >
+  <td class="text-right align-middle">
+    <a href="#" class="btn btn-danger font-weight-bolder font-size-sm">Remove</a
+    >
+  </td>
+</tr>

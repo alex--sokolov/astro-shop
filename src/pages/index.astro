@@ -3,7 +3,7 @@ import Layout from "../layouts/layout.astro";
 import { getUserProfile } from "../components/auth";
 import { getProducts } from "../components/products";
 import ProductsList from "../components/ProductsList.astro"
-import type { IProduct, IProductsInfo } from "../interfaces";
+import type { IUser, IProduct, IProductsInfo } from "../interfaces";
 const tokenCookie = Astro.cookies.get("astro-shop-token");
 const token = Object.keys(tokenCookie).length !== 0 ? tokenCookie.value : null;
 
@@ -21,3 +21,36 @@ const products: IProduct[] = productsInfo.data ? productsInfo.data : [];
   <ProductsList products={products} user={user} token={token}/>
   <!-- Products: {JSON.stringify(products, null, 4)} -->
 </Layout>
+
+<script is:inline src="/assets/js/my/products/addOneToCart.js"></script>
+
+<script>
+  const btnInfoAll = document.querySelectorAll(".btn-product-info") as NodeListOf<HTMLButtonElement>;;
+  if (btnInfoAll.length > 0) {
+    Array.from(btnInfoAll).forEach((btn) => {
+      btn.addEventListener("click", function (e: Event) {
+        if (e.target instanceof HTMLButtonElement) {
+          window.location.href = e.target.dataset.url as string;
+        }
+      });
+    });
+  }
+
+  const btnEditAll = document.querySelectorAll(".btn-product-edit") as NodeListOf<HTMLButtonElement>;;
+  if (btnEditAll.length > 0) {
+    Array.from(btnEditAll).forEach((btn) => {
+      btn.addEventListener("click", function (e: Event) {
+        if (e.target instanceof HTMLButtonElement) {
+          window.location.href = e.target.dataset.url as string;
+        }
+      });
+    });
+  }
+
+  const btnCartAll = document.querySelectorAll(
+    ".btn-product-cart"
+  ) as NodeListOf<HTMLButtonElement>;
+  if (btnCartAll.length > 0) {
+    Array.from(btnCartAll).forEach(addOneProductToCart);
+  }
+</script>

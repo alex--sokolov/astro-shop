@@ -1,5 +1,6 @@
 ---
 import { getUserProfile } from "../components/auth";
+import CardDetailedInfo from "../components/CartDetailedInfo.astro";
 import type {IUser} from "../interfaces";
 
 const { token } = Astro.props;
@@ -76,7 +77,12 @@ if (token) {
   {
     user && user.username && user.id ? (
       <div class="menu-item">
-        <div  data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
+        <div 
+          id="btn-cart-menu" 
+          data-kt-menu-trigger="click" 
+          data-kt-menu-placement="bottom-start" 
+          data-kt-menu-permanent="true"
+        >
           <a id="menu-cart" class="menu-link">
             <span class="menu-icon">
               <i class="bi bi-cart fs-3" />
@@ -88,34 +94,7 @@ if (token) {
           </a>
         </div>
         <!--begin::Cart detailed info-->
-        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-75" data-kt-menu="true">
-            <!--begin::Menu item-->
-            <div class="menu-item px-3">
-                <div class="menu-content fs-6 text-dark fw-bold px-3 py-4" style="width: 90vw">live cart information</div>
-            </div>
-            <!--end::Menu item-->
-            <!--begin::Menu separator-->
-            <div class="separator mb-3 opacity-75"></div>
-            <!--end::Menu separator-->
-
-            <!--begin::Cart info description -->
-            <div id="cart-details" style="display: block; height: 300px; width: 300px;">
-
-            </div>
-            <!--end::Cart info description -->
-            <!--begin::Menu separator-->
-            <div class="separator mt-3 opacity-75"></div>
-            <!--end::Menu separator-->
-
-            <!--begin::Menu item-->
-            <div class="menu-item px-3">
-                <div class="menu-content px-3 py-3" style="text-align: right;">
-                    <a class="btn btn-light-primary btn-sm px-4" href="#">
-                        Proceed to checkout
-                    </a>
-                </div>
-            </div>
-        </div>
+          <CardDetailedInfo user={user} />
         <!--end::Cart detailed info-->
         <div class="greetings">
           <div class="greetings-word">Hello,</div>
